@@ -1,0 +1,88 @@
+<html>
+    
+    <head>
+        <meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,width=device-width,height=device-height,target-densitydpi=device-dpi,user-scalable=yes"
+        />
+        <script src="bower_components/easeljs/lib/easeljs-0.8.0.min.js"></script>
+    </head>
+    
+    <body>
+        <canvas id="testCanvas" width="640" height="480" style="background: black;"></canvas>
+        
+        <script>
+            function init() {
+    // create stage and point it to the canvas:
+    canvas = document.getElementById("testCanvas");
+
+    //check to see if we are running in a browser with touch support
+    stage = new createjs.Stage(canvas);
+
+    // enable touch interactions if supported on the current device:
+    createjs.Touch.enable(stage);
+
+    // enabled mouse over / out events
+    stage.enableMouseOver(10);
+    //stage.mouseMoveOutside = true; // keep tracking the mouse even when it leaves the canvas
+    createjs.Ticker.setFPS(25);
+
+    setupScene();
+}
+
+function tick() {
+    stage.update();
+}
+
+function setupScene() {
+    var container = new createjs.Container();
+    stage.addChild(container);
+
+    for (var i = 0; i < 20; i++) {
+        var bitmap = new createjs.Shape();
+        bitmap.graphics.beginFill("#ff0000").drawRect(50, 50, 100, 100);
+        bitmap.alpha = 0.5;
+        container.addChild(bitmap);
+        bitmap.x = canvas.width * Math.random() | 0;
+        bitmap.y = canvas.height * Math.random() | 0;
+        bitmap.rotation = 360 * Math.random() | 0;
+        bitmap.regX = 50;
+        bitmap.regY = 50;
+        bitmap.scaleX = bitmap.scaleY = bitmap.scale = Math.random() * 0.4 + 0.6;
+
+        // wrapper function to provide scope for the event handlers:
+        (function (target) {
+            bitmap.onPress = function (evt) {
+                console.log('press');
+                // bump the target in front of it's siblings:
+                //container.addChild(target);
+                var offset = {
+                    x: target.x - evt.stageX,
+                    y: target.y - evt.stageY
+                };
+
+                // add a handler to the event object's onMouseMove callback
+                // this will be active until the user releases the mouse button:
+                evt.onMouseMove = function (ev) {
+                    console.log('press+move');
+                    target.x = ev.stageX + offset.x;
+                    target.y = ev.stageY + offset.y;
+                };
+            };
+            bitmap.onMouseOver = function () {
+                console.log('in');
+                target.alpha = 1.0;
+            };
+            bitmap.onMouseOut = function () {
+                console.log('out');
+                target.alpha = 0.5;
+            };
+
+        })(bitmap);
+    }
+    createjs.Ticker.addEventListener("tick", tick);
+}
+
+init();
+        </script>
+    </body>
+ 
+</html>

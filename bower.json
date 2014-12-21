@@ -1,0 +1,11 @@
+{
+  "name": "easeljs-start",
+  "description": "",
+  "version": "0.0.0",
+  "homepage": "",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "easeljs": "~0.8.0"
+  }
+}
