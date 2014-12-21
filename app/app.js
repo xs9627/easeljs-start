@@ -1,8 +1,20 @@
 var stage, text;
 
 function init() {
+    var canvas = document.getElementById("demoCanvas");
+    var designWidth = 640;
+    var designHeight = 1136;
+    var viewWidth = document.documentElement.clientWidth;
+    var viewHeight = document.documentElement.clientHeight;
+    var scale = viewWidth / designWidth;
+    canvas.width = designWidth;
+    canvas.height = viewHeight / scale;
+    canvas.style.width = viewWidth + "px";
+    canvas.style.height = viewHeight + "px";
+    
+    var fixScale = designWidth / 320;
     var btnAStatus = false;
-    var btnBStatus = true;
+    var btnBStatus = false;
     var dirctionStatus = '';
     stage = new createjs.Stage("demoCanvas");
     
@@ -10,40 +22,51 @@ function init() {
     stage.enableMouseOver(10);
     stage.mouseMoveOutside = true;
     
+    var container = new createjs.Container();
+    var bodyWidth = 305;
+    var body = new createjs.Shape();
+    body.graphics.beginFill("Gray").drawRect(0, 0, bodyWidth, stage.canvas.height);
+    container.addChild(body);
+
     var screen = new createjs.Shape();
-    screen.graphics.beginFill("Green").drawRect(20, 20, stage.canvas.width-40, stage.canvas.width - 40);
-    stage.addChild(screen);
+    screen.graphics.beginFill("Green").drawRect(10, 10, bodyWidth - 20, bodyWidth - 20);
+    container.addChild(screen);
     
     var text = new createjs.Text("Hello World", "20px Arial", "black");
     text.x = 100;
     text.y = 100;
     text.textBaseline = "alphabetic";
-    stage.addChild(text);
+    container.addChild(text);
     
     var cirRid = 45;
     var cirX = 70;
-    var cirY = 350;
+    var cirY = bodyWidth + 80;
     var circle = new createjs.Shape();
     circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, cirRid);
     circle.x = cirX;
     circle.y = cirY;
     circle.shadow = new createjs.Shadow("#000000", 5, 5, 10);
-    stage.addChild(circle);
+    container.addChild(circle);
     
     var btnA = new createjs.Shape();
     btnA.graphics.beginFill("Red").drawCircle(0, 0, 30);
     btnA.x = 180;
     btnA.y = cirY + 20;
     btnA.shadow = new createjs.Shadow("#000000", 5, 5, 10);
-    stage.addChild(btnA);
+    container.addChild(btnA);
     
     var btnB = new createjs.Shape();
     btnB.graphics.beginFill("Red").drawCircle(0, 0, 30);
     btnB.x = 250;
     btnB.y = cirY -20;
     btnB.shadow = new createjs.Shadow("#000000", 5, 5, 10);
-    stage.addChild(btnB);
+    container.addChild(btnB);
     
+    container.x = 7.5 * fixScale;
+    container.y = 7.5 * fixScale;
+    container.scaleX = container.scaleY = fixScale;
+    
+    stage.addChild(container);
     stage.update();
     
     circle.addEventListener("pressup", function (evt) {
@@ -63,11 +86,11 @@ function init() {
     
     function dirction (evt) {
         var o = evt.target;
-        var offset = {x: (evt.stageX - o.x) / cirRid, y: -(evt.stageY - o.y) / cirRid};
+        var offset = {x: (evt.stageX - o.x * fixScale) / cirRid, y: -(evt.stageY - o.y * fixScale) / cirRid};
         var arc = Math.atan2(offset.y, offset.x);
         var arcSin = Math.sin(arc - Math.PI * 1 / 4);
         var arcCos = Math.cos(arc - Math.PI * 1 / 4);
-        //console.log(o.x+'|'+o.y+'|' +evt.stageX+'|' + evt.stageY);
+        console.log(o.x+'|'+o.y+'|' +evt.stageX+'|' + evt.stageY);
         
         var absArc = Math.abs(arc);
         console.log(arc + '|' + arcSin + '|' + absArc);
@@ -109,7 +132,7 @@ function init() {
     });
     
     function Refresh() {
-        text.text = "Direction:" + dirctionStatus +"\n\nButton A: " + (btnAStatus?"Press":"UnPress") +"\n\nButton B: " + (btnBStatus?"Press":"UnPress");
+        text.text = "Direction:" + dirctionStatus +"\n\nButton A: " + (btnAStatus?"Press":"UnPress") +"\n\nButton B: " + (btnBStatus?"Press":"UnPress") + "\n\nViewWidth: " + viewWidth + "\n\nViewHeight: " + viewHeight;
     }
     /*var data = {
         images: ["bower_components/easeljs/icon.png"],
@@ -123,7 +146,7 @@ function init() {
     var spriteSheet = new createjs.SpriteSheet(data);
     
     var sprite = new createjs.Sprite(spriteSheet, "run");
-    //sprite.scaleY = sprite.scaleX = 1.4;
+    //sprite.fixScaleY = sprite.fixScaleX = 1.4;
     stage.addChild(sprite);
     
     sprite.on("click", function() { 
