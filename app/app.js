@@ -13,8 +13,6 @@ function init() {
     canvas.style.height = viewHeight + "px";
     
     var fixScale = designWidth / 320;
-    var btnAStatus = false;
-    var btnBStatus = false;
     var dirctionStatus = '';
     stage = new createjs.Stage("demoCanvas");
     
@@ -53,6 +51,7 @@ function init() {
     btnA.x = 180;
     btnA.y = cirY + 20;
     btnA.shadow = new createjs.Shadow("#000000", 5, 5, 10);
+    btnA.pressed = false;
     container.addChild(btnA);
     
     var btnB = new createjs.Shape();
@@ -60,6 +59,7 @@ function init() {
     btnB.x = 250;
     btnB.y = cirY -20;
     btnB.shadow = new createjs.Shadow("#000000", 5, 5, 10);
+    btnB.pressed = false;
     container.addChild(btnB);
     
     container.x = 7.5 * fixScale;
@@ -106,33 +106,43 @@ function init() {
     }
     
     btnA.addEventListener("pressup", function (evt) {
-        btnAStatus = false;
-        var o = evt.target;
-        o.shadow = new createjs.Shadow("#000000", 5, 5, 10);
-        Refresh();
+        btnUnPress(evt);
+    });
+    btnA.addEventListener("mouseout", function (evt) {
+        btnUnPress(evt);
     });
     btnA.addEventListener("mousedown", function (evt) {
-        btnAStatus = true;
-        var o = evt.target;
-        o.shadow = null;
-        Refresh();
+        btnPress(evt);
     });
+    btnA.addEventListener("mouseover", function (evt) {
+        btnPress(evt);
+    });    
+
     
     btnB.addEventListener("pressup", function (evt) {
-        btnBStatus = false;
-        var o = evt.target;
-        o.shadow = new createjs.Shadow("#000000", 5, 5, 10);
-        Refresh();
+        btnUnPress(evt);
     });
     btnB.addEventListener("mousedown", function (evt) {
-        btnBStatus = true;
-        var o = evt.target;
-        o.shadow = null;
-        Refresh();
+        btnPress(evt);
     });
     
+    function btnPress(evt) {
+        var o = evt.target;
+        o.pressed = true;
+        o.shadow = null;
+        Refresh();
+    }
+    
+    function btnUnPress(evt) {
+        var o = evt.target;
+        o.pressed = false;
+        o.shadow = new createjs.Shadow("#000000", 5, 5, 10);
+        Refresh();
+    }
+    
+    
     function Refresh() {
-        text.text = "Direction:" + dirctionStatus +"\n\nButton A: " + (btnAStatus?"Press":"UnPress") +"\n\nButton B: " + (btnBStatus?"Press":"UnPress") + "\n\nViewWidth: " + viewWidth + "\n\nViewHeight: " + viewHeight;
+        text.text = "Direction:" + dirctionStatus +"\n\nButton A: " + (btnA.pressed?"Press":"UnPress") +"\n\nButton B: " + (btnB.pressed?"Press":"UnPress") + "\n\nViewWidth: " + viewWidth + "\n\nViewHeight: " + viewHeight;
     }
     /*var data = {
         images: ["bower_components/easeljs/icon.png"],
