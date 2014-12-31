@@ -1,6 +1,7 @@
 var stage, text;
-
+var angle;
 function init() {
+    angle = 0;
     var canvas = document.getElementById("demoCanvas");
     var designWidth = 640;
     var designHeight = 1136;
@@ -23,11 +24,11 @@ function init() {
     var container = new createjs.Container();
     var bodyWidth = 305;
     var body = new createjs.Shape();
-    body.graphics.beginFill("Gray").drawRect(0, 0, bodyWidth, stage.canvas.height);
+    body.graphics.beginLinearGradientFill(["#e5dddd", "#745858"], [0, 1], 0, 0, 300, 450).drawRoundRect(0, 0, bodyWidth, stage.canvas.height, 5);
     container.addChild(body);
 
     var screen = new createjs.Shape();
-    screen.graphics.beginFill("Green").drawRect(10, 10, bodyWidth - 20, bodyWidth - 20);
+    screen.graphics.beginFill("Green").drawRect(10, 10, bodyWidth - 25, bodyWidth - 25);
     container.addChild(screen);
     
     var text = new createjs.Text("Hello World", "20px Arial", "black");
@@ -35,6 +36,14 @@ function init() {
     text.y = 100;
     text.textBaseline = "alphabetic";
     container.addChild(text);
+    
+    var heart = new createjs.Shape();
+			heart.graphics.beginFill(createjs.Graphics.getHSL(Math.random() * 30 - 45, 100, 50 + Math.random() * 30));
+			heart.graphics.moveTo(0, -12).curveTo(1, -20, 8, -20).curveTo(16, -20, 16, -10).curveTo(16, 0, 0, 12);
+			heart.graphics.curveTo(-16, 0, -16, -10).curveTo(-16, -20, -8, -20).curveTo(-1, -20, 0, -12);
+    heart.x = 100;
+			heart.y = 100 * Math.random();
+    container.addChild(heart);
     
     var cirRid = 45;
     var cirX = 70;
@@ -65,9 +74,28 @@ function init() {
     container.x = 7.5 * fixScale;
     container.y = 7.5 * fixScale;
     container.scaleX = container.scaleY = fixScale;
+    //container.alpha = 0;
     
     stage.addChild(container);
     stage.update();
+    
+    createjs.Ticker.timingMode = createjs.Ticker.RAF;
+    createjs.Ticker.addEventListener("tick", tick);
+    
+
+    function tick(event) {
+        if(angle > Math.PI/2) {
+            createjs.Ticker.removeEventListener("tick", tick);
+        }
+		angle += 0.1;
+		var value = Math.sin(angle);
+
+		//container.rotation = value;
+		//container.scaleX = container.scaleY = value / 360;
+        text.y = 120 - value * 20;
+        //container.alpha = value;
+		stage.update(event);
+	}
     
     circle.addEventListener("pressup", function (evt) {
         var o = evt.target;

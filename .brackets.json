@@ -1,5 +1,11 @@
 {
     "jscodehints.detectedExclusions": [
-        "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/app.js"
+        "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/app.js",
+        "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/bower_components/easeljs/_assets/libs/tweenjs-NEXT.min.js",
+        "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/bower_components/easeljs/_assets/libs/soundjs-NEXT.min.js",
+        "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/bower_components/easeljs/_assets/libs/preloadjs-NEXT.min.js",
+        "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/bower_components/easeljs/_assets/js/Slider.js",
+        "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/bower_components/easeljs/_assets/js/examples.js",
+        "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/bower_components/easeljs/_assets/art/VectorButton.js"
     ]
 }
