@@ -4,6 +4,12 @@ var spanX = 3;
 var spanY;
 var mark;
 var start = false;
+var container;
+    var designWidth = 580;
+    var designHeight = 1029;
+var finish = false;
+var pics = ['onepiece','transform','wukong', 'op2'];
+var picIndex = -1;
 
 function init() {
     stage = new createjs.Stage("bulkCanvas");
@@ -11,8 +17,7 @@ function init() {
     createjs.Touch.enable(stage);
     
     var canvas = document.getElementById("bulkCanvas");
-    var designWidth = 580;
-    var designHeight = 1029;
+
     var viewWidth = document.documentElement.clientWidth;
     var viewHeight = document.documentElement.clientHeight;
     var scale = viewWidth / designWidth;
@@ -20,19 +25,36 @@ function init() {
     canvas.height = viewHeight / scale;
     canvas.style.width = viewWidth + "px";
     canvas.style.height = viewHeight + "px";
+    
+    
+    drawBulks();
+}
 
-
+function drawBulks(){
+    playSecond = 0;
+    start = false;
+    finish = false;
+    var tempIndex = picIndex;
+    while(picIndex == tempIndex){
+        tempIndex = Math.floor(Math.random() * 1000) % pics.length;
+    }
+    picIndex = tempIndex;
+    stage.removeChild(container);
     var img = new Image();
     img.onload = handleLoad;
-    img.src = "onepiece.jpg";
+    //img.src = "onepiece.jpg";
+    img.src = "pics/" + pics[picIndex] + ".jpg";
+    //img.src = "wukong.jpg";
 }
 
 function handleLoad(evt) {
+    container = new createjs.Container();
+    container.scaleX = container.scaleY = designWidth / evt.target.width;
     var s = new createjs.Shape();
     s.graphics.beginBitmapFill(evt.target).drawRect(0, 0, evt.target.width, evt.target.height);
     s.alpha = 0.25;
-    stage.addChild(s);
-    stage.update();
+    container.addChild(s);
+    //stage.update();
 
     mark = new Array();
     bulkWidth = Math.floor(evt.target.width / spanX);
@@ -63,6 +85,7 @@ function handleLoad(evt) {
     //    ]
 
     // draw the map:
+    var index = 0;
     for (var row = 0; row < spanY; row++) {
         mark[row] = new Array();
         for (var col = 0; col < spanX; col++) {
@@ -80,14 +103,16 @@ function handleLoad(evt) {
             tile.graphics.beginBitmapFill(evt.target).setStrokeStyle(1).beginStroke("#000000").drawRect(col * bulkWidth, row * bulkWidth, bulkWidth, bulkWidth);
             tile.posX = col;
             tile.posY = row;
+            tile.index = index++;
             tile.on("click", handleClick);
             mark[row][col] = tile;
-            stage.addChild(tile);
+            container.addChild(tile);
 
         }
     }
 
     // update the stage to draw to screen:
+    stage.addChild(container);
     stage.update();
 
 }
@@ -95,9 +120,9 @@ function handleLoad(evt) {
 function randomStart(bulk) {
     emptyBulk.x = bulk.posX;
     emptyBulk.y = bulk.posY;
-    stage.removeChild(bulk);
+    container.removeChild(bulk);
 
-    var count = 100;
+    var count = 3;
     while (count > 0) {
         move();
     }
@@ -133,9 +158,10 @@ function handleClick(evt) {
     if (!start) {
         start = true;
         randomStart(bulk);
+        timedCount();
     } else {
         if (Math.abs(bulk.posX - emptyBulk.x) + Math.abs(bulk.posY - emptyBulk.y) == 1) {
-            moveBulk(bulk, true);
+            moveBulk(bulk, true);            
         }
     }
 
@@ -148,6 +174,7 @@ function moveBulk(bulk, isAnimate) {
     var tmpX = emptyBulk.x;
     var tmpY = emptyBulk.y;
     mark[tmpY][tmpX] = bulk;
+    mark[bulk.posY][bulk.posX] = undefined;
     emptyBulk.x = bulk.posX;
     emptyBulk.y = bulk.posY;
     bulk.posX = tmpX;
@@ -156,15 +183,22 @@ function moveBulk(bulk, isAnimate) {
 
     if (isAnimate) {
         createjs.Ticker.timingMode = createjs.Ticker.RAF;
-        createjs.Ticker.setFPS(30);
+        createjs.Ticker.setFPS(60);
         createjs.Ticker.addEventListener("tick", tick);
         var count = 3;
         moveX = moveX / count;
         moveY = moveY / count;
 
         function tick(event) {
-            if (count-- < 2) {
+            if (count-- < 1) {
                 createjs.Ticker.removeEventListener("tick", tick);
+                if(check()){
+                    finish = true;
+                    stopCount();
+                    alert("haha, play time: " + playSecond / 100);
+                    drawBulks();
+                }
+                return;
             }
             bulk.x += moveX;
             bulk.y += moveY;
@@ -175,8 +209,34 @@ function moveBulk(bulk, isAnimate) {
         bulk.y += moveY;
         //stage.update();
     }
-
-
-
-
 }
+
+function check(){
+    var index = 0;
+    var finish = true;
+    to:
+    for (var row = 0; row < spanY; row++) {
+        for (var col = 0; col < spanX; col++){
+            if(mark[row][col]!=undefined && mark[row][col].index != index){
+                finish =false;
+                break to;
+            }
+            index++;
+        }
+    }
+    
+    return finish;
+}
+
+var playSecond=0;
+var timer;
+function timedCount() 
+{ 
+    //document.getElementById('txt').value=c 
+    playSecond += 1;
+    timer=setTimeout("timedCount()",10);
+} 
+function stopCount() 
+{ 
+    clearTimeout(timer);
+} 
