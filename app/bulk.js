@@ -122,7 +122,7 @@ function randomStart(bulk) {
     emptyBulk.y = bulk.posY;
     container.removeChild(bulk);
 
-    var count = 3;
+    var count = 100;
     while (count > 0) {
         move();
     }
