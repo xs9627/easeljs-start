@@ -183,9 +183,9 @@ function moveBulk(bulk, isAnimate) {
 
     if (isAnimate) {
         createjs.Ticker.timingMode = createjs.Ticker.RAF;
-        createjs.Ticker.setFPS(60);
+        createjs.Ticker.setFPS(30);
         createjs.Ticker.addEventListener("tick", tick);
-        var count = 3;
+        var count = 4;
         moveX = moveX / count;
         moveY = moveY / count;
 
