@@ -31,8 +31,12 @@ MongoClient = require('mongodb').MongoClient,
 root = __dirname + '/app';
 
 app.get("/", function (req, res) {
-    addRequestLog(req);
     res.redirect("/bulk.html");
+});
+
+app.use("/pics/*", function(req, res, next) {
+    addRequestLog(req);
+    next();
 });
 
 app.listen(port,  function () {
@@ -56,7 +60,7 @@ app.use(errorHandler({
 
 function addRequestLog(req){
   var userAgent = req.headers['user-agent'];
-  var url = req.url;
+  var url = req.originalUrl;
   var date = new Date();
   var request = {userAgent:userAgent, url:url, date:date};
   console.log(date+ ', ' + userAgent + ', ' + url);
