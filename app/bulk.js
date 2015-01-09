@@ -1,3 +1,16 @@
+window.shareData = {
+        "timeLineLink": "这里是一个链接",   
+        "sendFriendLink": window.location.href,
+        "weiboLink": "这里是一个链接",
+        "tTitle": "这里是title",
+        "tContent": "这里是显示的内容",
+        "fTitle": "益智拼图",
+        "fContent": "小帅哥快来玩吧😊",
+        "wContent": "这里是显示的内容"
+        };
+
+
+
 var emptyBulk = {};
 var bulkWidth;
 var spanX = 3;
@@ -10,6 +23,41 @@ var container;
 var finish = false;
 var pics = ['onepiece','transform','wukong', 'op2'];
 var picIndex = -1;
+
+var logoImg, logoWidth, logoHeight;
+var fTitle = "益智拼图", fContent;
+
+document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+    
+        // 发送给好友
+        WeixinJSBridge.on('menu:share:appmessage', function (argv) {
+            WeixinJSBridge.invoke('sendAppMessage', {
+                "img_url": logoImg,
+                "img_width": logoWidth,
+                "img_height": logoHeight,
+                "link": window.location.href,
+                "desc": fContent,
+                "title": fTitle
+            }, function (res) {
+                _report('send_msg', res.err_msg);
+            })
+        });
+        // 分享到朋友圈
+        WeixinJSBridge.on('menu:share:timeline', function (argv) {
+            WeixinJSBridge.invoke('shareTimeline', {
+                "img_url": logoImg,
+                "img_width": logoWidth,
+                "img_height": logoHeight,
+                "link": window.location.href,
+                "desc": fContent,
+                "title": fTitle
+            }, function (res) {
+                _report('timeline', res.err_msg);
+            });
+        });
+ 
+    }, false)
+    
 
 function init() {
     stage = new createjs.Stage("bulkCanvas");
@@ -44,10 +92,15 @@ function drawBulks(){
     img.onload = handleLoad;
     //img.src = "onepiece.jpg";
     img.src = "pics/" + pics[picIndex] + ".jpg";
+    
+    logoImg = img.src;
+    fContent = "小帅哥快来玩吧😊";
     //img.src = "wukong.jpg";
 }
 
 function handleLoad(evt) {
+    logoWidth = evt.target.width;
+    logoHeight = evt.target.height;
     container = new createjs.Container();
     container.scaleX = container.scaleY = designWidth / evt.target.width;
     var s = new createjs.Shape();
@@ -195,8 +248,10 @@ function moveBulk(bulk, isAnimate) {
                 if(check()){
                     finish = true;
                     stopCount();
-                    alert("haha, play time: " + playSecond / 100);
-                    drawBulks();
+                    
+                    fContent = "完成这块拼图用了" + playSecond / 100 + "秒!";
+                    alert(fContent);
+                    //drawBulks();
                 }
                 return;
             }
@@ -240,3 +295,6 @@ function stopCount()
 { 
     clearTimeout(timer);
 } 
+
+
+    
