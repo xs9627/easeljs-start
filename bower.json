@@ -6,6 +6,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "easeljs": "~0.8.0"
+    "easeljs": "~0.8.0",
+    "jquery": "~2.1.3"
   }
 }

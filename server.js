@@ -26,22 +26,9 @@ app = express(),
 bodyParser = require('body-parser'),
 errorHandler = require('errorhandler'),
 methodOverride = require('method-override'),
-port = parseInt(process.env.PORT, 10),
+port = parseInt(process.env.PORT, 10) || 3000,
 MongoClient = require('mongodb').MongoClient,
 root = __dirname + '/app';
-
-app.get("/", function (req, res) {
-    res.redirect("/bulk.html");
-});
-
-app.use("/pics/*", function(req, res, next) {
-    addRequestLog(req);
-    next();
-});
-
-app.listen(port,  function () {
-    console.log('Server listening on port ' + port);
-});
 
 /*Express static web server.*/
 app.use(methodOverride());
@@ -49,14 +36,41 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+app.use("/pics/*", function(req, res, next) {
+    addRequestLog(req);
+    next();
+});
 app.use(express.static(root + '/'));
-if (process.env.NODE_ENV == 'dev') {
-    app.use('/bower_components', express.static(root + '/../bower_components'));
-}
 app.use(errorHandler({
     dumpExceptions: true,
     showStack: true
 }));
+
+app.get("/", function (req, res) {
+    res.redirect("/bulk.html");
+});
+
+app.post("/score", function(req, res){
+    addScore({img:req.body.img, playTime:req.body.time, data:new Date()});
+});
+
+app.listen(port,  function () {
+    console.log('Server listening on port ' + port);
+});
+
+function addScore(score){
+    console.log(score);
+    MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
+      if(err) throw err;
+      //console.log("Connect to Database");
+
+
+      db.collection('scores').insert(score, function(err, records){
+          if(err) throw err;
+          console.log("Score added as " + records[0]._id);
+      });
+    });
+}
 
 function addRequestLog(req){
   var userAgent = req.headers['user-agent'];

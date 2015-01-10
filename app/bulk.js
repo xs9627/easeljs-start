@@ -23,6 +23,7 @@ var container;
 var finish = false;
 var pics = ['onepiece','transform','wukong', 'op2'];
 var picIndex = -1;
+var randomMoveTimes = 100;
 
 var logoImg, logoWidth, logoHeight;
 var fTitle = "益智拼图", fContent;
@@ -175,7 +176,7 @@ function randomStart(bulk) {
     emptyBulk.y = bulk.posY;
     container.removeChild(bulk);
 
-    var count = 100;
+    var count = randomMoveTimes;
     while (count > 0) {
         move();
     }
@@ -248,8 +249,21 @@ function moveBulk(bulk, isAnimate) {
                 if(check()){
                     finish = true;
                     stopCount();
-                    
-                    fContent = "完成这块拼图用了" + playSecond / 100 + "秒!";
+                    var second = playSecond / 100;
+                    fContent = "完成这块拼图用了" + second + "秒!";
+                    $.ajax({
+                        type:"POST",
+                        url:"/score",
+                        data:{img:pics[picIndex] , time:second},
+                        success:function(data){
+                            var a = 1;
+                        }
+                    });
+//                    $.post('/score',
+//                           {img:logoImg, time:second},
+//                           function(result){
+//                            var a = 1;
+//                           });
                     alert(fContent);
                     //drawBulks();
                 }

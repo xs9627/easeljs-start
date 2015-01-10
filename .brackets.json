@@ -6,6 +6,12 @@
         "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/bower_components/easeljs/_assets/libs/preloadjs-NEXT.min.js",
         "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/bower_components/easeljs/_assets/js/Slider.js",
         "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/bower_components/easeljs/_assets/js/examples.js",
-        "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/bower_components/easeljs/_assets/art/VectorButton.js"
+        "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/bower_components/easeljs/_assets/art/VectorButton.js",
+        "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/server.js",
+        "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/bower_components/jquery/src/var/push.js",
+        "Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/bower_components/jquery/src/event/alias",
+        "sizzle.js",
+        "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/bower_components/jquery/src/var/rnotwhite.js",
+        "/Volumes/OS X/Users/sonic/Documents/Git/easeljs-start/app/bower_components/jquery/src/var/slice.js"
     ]
 }
