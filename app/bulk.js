@@ -23,7 +23,7 @@ var container;
 var finish = false;
 var pics = ['onepiece','transform','wukong', 'op2'];
 var picIndex = -1;
-var randomMoveTimes = 100;
+var randomMoveTimes = 2;
 
 var logoImg, logoWidth, logoHeight;
 var fTitle = "益智拼图", fContent;
