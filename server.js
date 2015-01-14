@@ -28,7 +28,8 @@ var express = require("express"),
     methodOverride = require('method-override'),
     port = parseInt(process.env.PORT, 10) || 3000,
     MongoClient = require('mongodb').MongoClient,
-    root = __dirname + '/app';
+    root = __dirname + '/app'
+    crypto = require('crypto');
 
 /*Express static web server.*/
 app.use(methodOverride());
@@ -48,6 +49,34 @@ app.use(errorHandler({
 
 app.get("/", function (req, res) {
     res.redirect("/bulk.html");
+});
+
+app.get("/weichat", function (req, res) {
+    var token = "sonix";
+    var signature = req.query.signature;
+    var timestamp = req.query.timestamp;
+    var nonce = req.query.nonce;
+    var echostr = req.query.echostr;
+    var array = [token,timestamp,nonce];
+    
+    var temp = array.sort().join('');
+    
+    var hasher = crypto.createHash('sha1');
+    hasher.update(temp);
+    var hashmsg=hasher.digest('hex');
+    console.log(signature + '|' + hashmsg);
+    if(signature == hashmsg){
+        console.log(echostr);
+        res.send(echostr);
+    }else{
+        res.send("check failed, detail: " + hashmsg);
+    }
+    
+});
+
+app.post("/weichat", function (req, res) {
+    console.log(req);
+    res.send({ToUserName:"123"});
 });
 
 app.post("/score", function (req, res) {
